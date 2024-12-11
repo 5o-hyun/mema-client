@@ -5,13 +5,25 @@ import styled from 'styled-components';
 import { Emphasize, Text } from '@/components/Modal/modalTypography';
 import useToggle from '@/lib/hooks/useToggle';
 import ManagementContent from './ManagementContent';
+import { useMutation } from '@tanstack/react-query';
+import { deleteMeet } from '@/lib/api/meets';
+import { useRouter } from 'next/navigation';
 
 function ManagementGrid() {
+  const router = useRouter();
   const [isOpenModal, toggleOpenModal] = useToggle();
   const [isOpenConfirmModal, toggleOpenConfirmModal] = useToggle();
 
-  const onDeleteConfirm = () => {
-    toggleOpenConfirmModal();
+  const deleteMeetMutation = useMutation({
+    mutationFn: deleteMeet,
+    onSuccess: () => {
+      toggleOpenModal();
+      toggleOpenConfirmModal();
+    },
+  });
+
+  const onDelete = () => {
+    deleteMeetMutation.mutate(1);
   };
 
   return (
@@ -23,10 +35,7 @@ function ManagementGrid() {
       {isOpenModal && (
         <Modal
           type="OkCancel"
-          onOk={() => {
-            toggleOpenModal();
-            toggleOpenConfirmModal();
-          }}
+          onOk={onDelete}
           onClose={toggleOpenModal}
           okButtonName="삭제하기"
           width={326}
@@ -39,7 +48,14 @@ function ManagementGrid() {
         </Modal>
       )}
       {isOpenConfirmModal && (
-        <Modal type="Ok" onOk={onDeleteConfirm} width={326}>
+        <Modal
+          type="Ok"
+          onOk={() => {
+            toggleOpenConfirmModal();
+            router.push('/meet/management');
+          }}
+          width={326}
+        >
           <Text>미팅이 삭제되었습니다.</Text>
         </Modal>
       )}

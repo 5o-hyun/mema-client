@@ -1,0 +1,16 @@
+<svg width="36" height="39" viewBox="0 0 36 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="map">
+<g id="Ellipse 23" filter="url(#filter0_f_40000436_32443)">
+<ellipse cx="18" cy="33" rx="8" ry="3" fill="black" fill-opacity="0.25"/>
+</g>
+<path id="Vector" d="M32 14.9091C32 25.7273 18 35 18 35C18 35 4 25.7273 4 14.9091C4 11.2202 5.475 7.68234 8.1005 5.07388C10.726 2.46542 14.287 1 18 1C21.713 1 25.274 2.46542 27.8995 5.07388C30.525 7.68234 32 11.2202 32 14.9091Z" fill="#238AFF"/>
+<path id="Vector_2" d="M18 20C20.7614 20 23 17.7614 23 15C23 12.2386 20.7614 10 18 10C15.2386 10 13 12.2386 13 15C13 17.7614 15.2386 20 18 20Z" fill="white"/>
+</g>
+<defs>
+<filter id="filter0_f_40000436_32443" x="7" y="27" width="22" height="12" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="1.5" result="effect1_foregroundBlur_40000436_32443"/>
+</filter>
+</defs>
+</svg>

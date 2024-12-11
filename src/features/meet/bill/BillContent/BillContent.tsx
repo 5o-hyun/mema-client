@@ -1,28 +1,46 @@
 'use client';
-import Button from '@/components/Button';
 import React from 'react';
 import styled from 'styled-components';
 
-const BillContent = () => {
+type Props = {
+  content: string;
+  payeeNickname: string;
+  totalPrice: number;
+  peopleNumber: number;
+  payers: {
+    payerId: number;
+    payerNickname: string;
+  }[];
+  onClick: () => void;
+};
+
+const BillContent = ({
+  content,
+  payeeNickname,
+  totalPrice,
+  peopleNumber,
+  payers,
+  onClick,
+}: Props) => {
   return (
-    <Container>
+    <Container onClick={onClick}>
       <div className="billContentTextGroup">
-        <p className="billContentPlace">봉추찜닭</p>
-        <p className="billContentPaymentPerson">쌈뽕한메마러버</p>
+        <p className="billContentPlace">{content}</p>
+        <p className="billContentPaymentPerson">{payeeNickname}</p>
       </div>
       <div className="billContentPayment">
         <p>
-          <b>38400</b>원 ÷ <b>3</b>명으로
+          <b>{totalPrice}</b>원 ÷ <b>{peopleNumber}</b>명으로
         </p>
         <p>인당 결제 금액은</p>
         <p>
-          <b className="price">12800</b>원 이에요!
+          <b className="price">{totalPrice / peopleNumber}</b>원 이에요!
         </p>
       </div>
       <div className="billContentPayment">
         <p>함께한 사람은</p>
         <p>
-          <b>김짜장, 박짬뽕</b> 입니다!
+          <b>{payers.map((payer) => payer.payerNickname).join(', ')}</b> 입니다!
         </p>
       </div>
     </Container>
@@ -34,6 +52,7 @@ const Container = styled.div`
   border-radius: ${({ theme }) => theme.borderRadius.medium};
   padding: 16px;
   background-color: ${({ theme }) => theme.colors.gray[6]};
+  cursor: pointer;
   .billContentTextGroup {
     display: flex;
     justify-content: space-between;

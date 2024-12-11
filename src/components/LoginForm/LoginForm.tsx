@@ -3,27 +3,30 @@ import InputWrapper from '@/components/Input/InputWrapper';
 import Label from '@/components/common/Label';
 import Input from '@/components/Input';
 import ToggleVisibilityButton from '@/components/common/ToggleVisibilityButton';
-import { useInputState } from '@/hooks/useInputState';
 import styled from 'styled-components';
+import { UseInputStateReturn } from '@/hooks/useInputState';
 
-const LoginForm: React.FC = () => {
-  const username = useInputState();
-  const password = useInputState();
+type LoginFormProps = {
+  email: UseInputStateReturn;
+  password: UseInputStateReturn;
+};
+
+const LoginForm: React.FC<LoginFormProps> = ({ email, password }) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   return (
     <LoginContainer>
-      <InputWrapper isFocused={username.isFocused} isEmpty={username.isEmpty}>
-        <Label isFocused={username.isFocused} isEmpty={username.isEmpty}>
-          아이디
+      <InputWrapper isFocused={email.isFocused} isEmpty={email.isEmpty}>
+        <Label isFocused={email.isFocused} isEmpty={email.isEmpty}>
+          이메일
         </Label>
         <Input
-          type="text"
-          value={username.value}
-          placeholder="아이디를 입력하세요"
-          onChange={username.handleChange}
-          onFocus={username.handleFocus}
-          onBlur={username.handleBlur}
+          type="email"
+          value={email.value}
+          placeholder="이메일을 입력하세요"
+          onChange={email.handleChange}
+          onFocus={email.handleFocus}
+          onBlur={email.handleBlur}
         />
       </InputWrapper>
       <InputWrapper isFocused={password.isFocused} isEmpty={password.isEmpty}>

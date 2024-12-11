@@ -1,10 +1,20 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, Dispatch, SetStateAction } from 'react';
 
 interface UseInputStateParams {
   validate?: (value: string) => boolean;
 }
+export interface UseInputStateReturn {
+  value: string;
+  isFocused: boolean;
+  isEmpty: boolean;
+  isError: boolean;
+  handleFocus: () => void;
+  handleBlur: () => void;
+  handleChange: (newValue: string) => void;
+  setValue: Dispatch<SetStateAction<string>>;
+}
 
-export const useInputState = ({ validate }: UseInputStateParams = {}) => {
+export const useInputState = ({ validate }: UseInputStateParams = {}): UseInputStateReturn => {
   const [value, setValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
 
@@ -23,5 +33,6 @@ export const useInputState = ({ validate }: UseInputStateParams = {}) => {
     handleFocus,
     handleBlur,
     handleChange,
+    setValue,
   };
 };

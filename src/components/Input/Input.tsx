@@ -18,6 +18,7 @@ const StyledInput = styled.input`
   border: none;
   outline: none;
   padding: 0;
+  background-color: transparent;
   ${({ theme }) => theme.fonts.text['2xl']};
   &::placeholder {
     color: ${({ theme }) => theme.colors.gray[4]};

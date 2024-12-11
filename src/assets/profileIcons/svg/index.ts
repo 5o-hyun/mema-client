@@ -1,0 +1,12 @@
+export { default as Icon1 } from './1.svg';
+export { default as Icon2 } from './2.svg';
+export { default as Icon3 } from './3.svg';
+export { default as Icon4 } from './4.svg';
+export { default as Icon5 } from './5.svg';
+export { default as Icon6 } from './6.svg';
+export { default as Icon7 } from './7.svg';
+export { default as Icon8 } from './8.svg';
+export { default as Icon9 } from './9.svg';
+export { default as Icon10 } from './10.svg';
+export { default as Icon11 } from './11.svg';
+export { default as Icon12 } from './12.svg';

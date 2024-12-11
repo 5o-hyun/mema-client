@@ -5,31 +5,79 @@ import InputWrapper from '@/components/Input/InputWrapper';
 import Modal from '@/components/Modal';
 import { Text } from '@/components/Modal/modalTypography';
 import { useInputState } from '@/hooks/useInputState';
+import { getMeet, updateMeet } from '@/lib/api/meets';
 import useToggle from '@/lib/hooks/useToggle';
-import React from 'react';
+import { Meet } from '@/types/meets';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { AxiosResponse } from 'axios';
+import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 function ManagementChangeName() {
-  const name = useInputState();
+  const {
+    value: meetName,
+    isFocused,
+    isEmpty,
+    handleFocus,
+    handleBlur,
+    handleChange,
+  } = useInputState();
   const [isOpenModal, toggleOpenModal] = useToggle();
+  const router = useRouter();
+
+  const { data: meet } = useQuery<AxiosResponse<Meet>>({
+    queryKey: ['meet'],
+    queryFn: () => getMeet(1),
+  });
+
+  const updateMeetMutation = useMutation({
+    mutationFn: updateMeet,
+    onSuccess: () => {
+      toggleOpenModal();
+    },
+  });
+
+  const onSubmit = () => {
+    if (!meet) {
+      return;
+    }
+
+    updateMeetMutation.mutate({ meetId: meet.data.meetId, meetName });
+  };
+
+  useEffect(() => {
+    if (!meet) {
+      return;
+    }
+
+    handleChange(meet.data.meetName);
+  }, [meet, handleChange]);
 
   return (
     <>
-      <InputWrapper isFocused={name.isFocused} isEmpty={name.isEmpty}>
-        <Label isFocused={name.isFocused} isEmpty={name.isEmpty}>
+      <InputWrapper isFocused={isFocused} isEmpty={isEmpty}>
+        <Label isFocused={isFocused} isEmpty={isEmpty}>
           닉네임
         </Label>
         <Input
           type="text"
-          value={name.value}
-          onChange={name.handleChange}
-          onFocus={name.handleFocus}
-          onBlur={name.handleBlur}
+          value={meetName}
+          onChange={handleChange}
+          onFocus={handleFocus}
+          onBlur={handleBlur}
         />
       </InputWrapper>
-      <StyledButton name="미팅명 변경하기" onClick={toggleOpenModal} />
+      <StyledButton name="미팅명 변경하기" onClick={onSubmit} />
       {isOpenModal && (
-        <Modal type="Ok" onOk={toggleOpenModal} width={326}>
+        <Modal
+          type="Ok"
+          onOk={() => {
+            toggleOpenModal();
+            router.push('/meet/management');
+          }}
+          width={326}
+        >
           <Text>미팅명이 변경되었습니다.</Text>
         </Modal>
       )}

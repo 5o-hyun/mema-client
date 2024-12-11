@@ -1,5 +1,7 @@
+import ReactQueryProvider from '@/components/common/ReactQueryProvider';
 import ThemeProviderWrapper from '@/components/common/ThemeProviderWrapper';
 import GlobalStyle from '@/styles/global';
+import Script from 'next/script';
 
 export const metadata = {
   title: 'Next.js',
@@ -9,11 +11,17 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ko">
+      <Script
+        strategy="afterInteractive"
+        src={`https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=${process.env.REACT_APP_MAP_KEY}`}
+      ></Script>
       <body>
-        <ThemeProviderWrapper>
-          <GlobalStyle />
-          {children}
-        </ThemeProviderWrapper>
+        <ReactQueryProvider>
+          <ThemeProviderWrapper>
+            <GlobalStyle />
+            {children}
+          </ThemeProviderWrapper>
+        </ReactQueryProvider>
       </body>
     </html>
   );

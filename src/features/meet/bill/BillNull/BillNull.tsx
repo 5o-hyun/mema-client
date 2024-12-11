@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import NullImage from '../../../../assets/icons/svg/null.svg';
+import NullImage from '@/assets/icons/svg/null.svg';
 
 const BillNull = () => {
   return (

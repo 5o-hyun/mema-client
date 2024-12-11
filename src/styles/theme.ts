@@ -18,6 +18,8 @@ export const theme = {
       darker: '#0062D1',
     },
     white: '#FFFFFF',
+    purple: '#B47AFF',
+    blue: '#238AFF',
   },
   fonts: {
     title: {
@@ -107,6 +109,7 @@ export const theme = {
     medium: '15px',
   },
   zIndex: {
+    navigation: 950,
     dropdown: 1000,
     modal: 1050,
     tooltip: 1100,
