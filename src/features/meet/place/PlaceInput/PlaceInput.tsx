@@ -1,16 +1,38 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
+import { Station } from '@/types/locate';
 import { useRouter } from 'next/navigation';
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { ChevronLeft, Search } from 'react-feather';
 import styled from 'styled-components';
 
 type Props = {
+  stations: any;
+  searchKeyword: string;
   isFocus: boolean;
+  setSearchKeyword: any;
   onFocus: () => void;
+  onClick: (station: Station) => void;
 };
 
-const PlaceInput = ({ isFocus, onFocus }: Props) => {
+const PlaceInput = ({
+  stations,
+  searchKeyword,
+  isFocus,
+  setSearchKeyword,
+  onFocus,
+  onClick,
+}: Props) => {
   const router = useRouter();
+
+  // 검색 필터링된 결과 생성
+  const filteredStations = useMemo(() => {
+    return stations?.data.stationList?.filter((station: Station) =>
+      station.stationName?.includes(searchKeyword),
+    );
+  }, [stations?.data.stationList, searchKeyword]);
+
+  if (!stations) return;
 
   return (
     <Container isFocus={isFocus}>
@@ -21,29 +43,30 @@ const PlaceInput = ({ isFocus, onFocus }: Props) => {
           <input
             placeholder="모임날 출발하는 지하철 역을 알려주세요!"
             onFocus={onFocus}
+            value={searchKeyword}
+            onChange={(e) => setSearchKeyword(e.target.value)}
             className="searchInput"
           />
           <Search />
         </div>
       </div>
-      {/* 배경부분 */}
+      {/* 데이터부분 */}
       {isFocus && (
         <div className="background">
           <div className="placeContainer">
-            <div className="place">
-              <p className="title">잠실역2호선1</p>
-              <p className="location">서울송파구올림픽로</p>
-            </div>
-            <div className="place">
-              <p className="title">잠실역2호선2</p>
-              <p className="location">서울송파구올림픽로</p>
-            </div>
-            <div className="place">
-              <p className="title">잠실역2호선3</p>
-              <p className="location">
-                서울송파구올림서울송파구올림픽로서울송파구올림픽로서울송파구올림픽로픽로
-              </p>
-            </div>
+            {filteredStations.length > 0 ? (
+              filteredStations.map((station: Station) => (
+                <div key={station.stationId} className="place" onClick={() => onClick(station)}>
+                  <p className="title">{`${station.stationName} ${station.routeName}`}</p>
+                  <p className="location">{station.routeName}</p>
+                </div>
+              ))
+            ) : (
+              <div className="place">
+                <p className="title">검색결과가 없습니다.</p>
+                <p className="location"></p>
+              </div>
+            )}
           </div>
         </div>
       )}

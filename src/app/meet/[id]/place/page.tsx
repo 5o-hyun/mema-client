@@ -5,15 +5,65 @@ import { DisabledText, Emphasize, Text } from '@/components/Modal/modalTypograph
 import PlaceDrawer from '@/features/meet/place/PlaceDrawer';
 import PlaceInput from '@/features/meet/place/PlaceInput';
 import PlaceUserLocation from '@/features/meet/place/PlaceUserLocation';
+import { createVoteLocation, getMyLocation, getStations, getTotalLocation } from '@/lib/api/locate';
+import { getMeet } from '@/lib/api/meets';
 import useToggle from '@/lib/hooks/useToggle';
-import React, { useEffect, useRef } from 'react';
+import { Station } from '@/types/locate';
+import { MeetResponse } from '@/types/meets';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { AxiosResponse } from 'axios';
+import { useParams } from 'next/navigation';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
 const PlacePage = () => {
+  const params = useParams();
+  const meetId = (params?.id && Number(params.id)) || null;
+  const [searchKeyword, setSearchKeyword] = useState('');
+  const [station, setStation] = useState<Station>();
   const mapRef = useRef<naver.maps.Map | null>(null);
   const [isFocusSearch, toggleFocusSearch] = useToggle();
   const [isOpenModal, toggleOpenModal] = useToggle();
   const [isOpenConfirmModal, toggleOpenConfirmModal] = useToggle();
+
+  // 만남 조회
+  // const { data: meet } = useQuery<AxiosResponse<MeetResponse>>({
+  //   queryKey: ['meet', meetId],
+  //   queryFn: () => getMeet(meetId as number),
+  //   enabled: meetId !== null,
+  // });
+  // console.log(meet);
+
+  const { data: stations } = useQuery<AxiosResponse>({
+    queryKey: ['meet', meetId],
+    queryFn: () => getStations(meetId as number),
+    enabled: meetId !== null,
+  });
+
+  const { data: myLocation, refetch: refetchMyLocation } = useQuery<AxiosResponse>({
+    queryKey: ['myLocation', meetId],
+    queryFn: () => getMyLocation(meetId as number),
+    enabled: meetId !== null,
+  });
+
+  const { data: totalLocation } = useQuery<AxiosResponse>({
+    queryKey: ['totalLocation', meetId],
+    queryFn: () => getTotalLocation(meetId as number),
+    enabled: meetId !== null,
+  });
+
+  const createVoteMutation = useMutation({
+    mutationFn: createVoteLocation,
+    onSuccess: () => {
+      toggleOpenModal();
+      toggleOpenConfirmModal();
+      refetchMyLocation();
+    },
+    onError: (error) => {
+      console.error(error);
+      // alert('error');
+    },
+  });
 
   useEffect(() => {
     const initMap = () => {
@@ -86,28 +136,52 @@ const PlacePage = () => {
     toggleFocusSearch();
   };
 
+  const onClickSearch = (station: Station) => {
+    setSearchKeyword(`${station.stationName} ${station.routeName}`);
+    setStation(station);
+    toggleFocusSearch();
+  };
+
+  const onClickModal = () => {
+    if (searchKeyword === '') {
+      return alert('위치를 검색해주세요');
+    }
+    toggleOpenModal();
+  };
+
+  const onClickConfirmModal = () => {
+    createVoteMutation.mutate({ meetId: meetId as number, station: station as Station });
+  };
+
   return (
     <>
       <Container>
-        <PlaceInput isFocus={isFocusSearch} onFocus={onFocusSearch} />
+        {!myLocation && (
+          <PlaceInput
+            stations={stations}
+            searchKeyword={searchKeyword}
+            isFocus={isFocusSearch}
+            setSearchKeyword={setSearchKeyword}
+            onFocus={onFocusSearch}
+            onClick={onClickSearch}
+          />
+        )}
         <div id="map" style={{ width: '100%', height: '100vh' }}>
           <PlaceUserLocation onClick={onClickUserLocation} />
         </div>
-        <StyledButton name="위치 확정하기" onClick={toggleOpenModal} />
+        {!myLocation && <StyledButton name="위치 확정하기" onClick={onClickModal} />}
       </Container>
-      {/* <PlaceDrawer /> */}
+      {myLocation && (
+        <PlaceDrawer
+          myLocation={myLocation.data.startStation}
+          totalLocation={totalLocation?.data}
+        />
+      )}
+
       {isOpenModal && (
-        <Modal
-          type="OkCancel"
-          onOk={() => {
-            toggleOpenModal();
-            toggleOpenConfirmModal();
-          }}
-          onClose={toggleOpenModal}
-          width={294}
-        >
+        <Modal type="OkCancel" onOk={onClickConfirmModal} onClose={toggleOpenModal} width={294}>
           <Text>
-            <Emphasize>잠실역</Emphasize>에서 출발하시나요?
+            <Emphasize>{searchKeyword}</Emphasize>에서 출발하시나요?
           </Text>
           <DisabledText>위치를 확정하면 수정할 수 없어요!</DisabledText>
         </Modal>

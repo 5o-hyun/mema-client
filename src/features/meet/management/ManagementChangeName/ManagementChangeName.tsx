@@ -10,7 +10,7 @@ import useToggle from '@/lib/hooks/useToggle';
 import { MeetResponse } from '@/types/meets';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
@@ -25,10 +25,11 @@ function ManagementChangeName() {
   } = useInputState();
   const [isOpenModal, toggleOpenModal] = useToggle();
   const router = useRouter();
+  const params = useParams();
 
   const { data: meet } = useQuery<AxiosResponse<MeetResponse>>({
     queryKey: ['meet'],
-    queryFn: () => getMeet(1),
+    queryFn: () => getMeet(Number(params.id)),
   });
 
   const updateMeetMutation = useMutation({
@@ -42,8 +43,7 @@ function ManagementChangeName() {
     if (!meet) {
       return;
     }
-
-    updateMeetMutation.mutate({ meetId: meet.data.meetId, meetName });
+    updateMeetMutation.mutate({ meetId: Number(params.id), meetName: meetName });
   };
 
   useEffect(() => {

@@ -45,10 +45,9 @@ export default function Home() {
       </>
     );
   }
-  if (!meets) return;
 
   const meetingCreateHandler = () => {
-    if (meets.data.upcomingMeets.length < MAX_UPCOMMING_MEET_COUNT) {
+    if (!meets || meets.data.upcomingMeets.length < MAX_UPCOMMING_MEET_COUNT) {
       router.push('/meet/create');
     } else {
       toggleModal();
@@ -63,7 +62,7 @@ export default function Home() {
         name="참여코드 입력하기"
         onClick={() => router.push('/meet/join')}
       />
-      {meets.data.upcomingMeets.length === 0 && meets.data.pastMeets.length === 0 ? (
+      {!meets ? (
         <MeetingHistoryNull />
       ) : (
         <>

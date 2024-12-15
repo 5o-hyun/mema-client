@@ -15,12 +15,14 @@ import { useParams, useRouter } from 'next/navigation';
 import html2canvas from 'html2canvas';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import { Account } from '@/types/account';
+import { getUser } from '@/lib/api/account';
 
 function BillPage() {
   const router = useRouter();
   const params = useParams();
+  const meetId = (params?.id && Number(params.id)) || null;
   const captureRef = useRef<HTMLDivElement>(null);
-  const [userName, setUserName] = useState('메마만세');
   const [chargeId, setChargeId] = useState(0);
   const [isOpenShareModal, toggleOpenShareModal] = useToggle();
   const [isOpenNotUserModal, toggleOpenNotUserModal] = useToggle();
@@ -28,20 +30,24 @@ function BillPage() {
   const [isOpenDeleteModal, toggleOpenDeleteModal] = useToggle();
   const [isOpenConfirmModal, toggleOpenConfirmModal] = useToggle();
 
-  const { data: bills } = useQuery<AxiosResponse<Bills>>({
+  const { data: bills, refetch: refetchBills } = useQuery<AxiosResponse<Bills[]>>({
     queryKey: ['bills'],
-    queryFn: () => getBills(1),
+    queryFn: () => getBills(meetId as number),
   });
 
-  const { data: bill } = useQuery<AxiosResponse<Bill>>({
-    queryKey: ['bill'],
-    queryFn: () => getBill({ meetId: Number(params.id), chargeId }),
+  const { data: bill, refetch: refetchBill } = useQuery<AxiosResponse>({
+    queryKey: ['bill', chargeId],
+    queryFn: () => getBill({ meetId: meetId as number, chargeId }),
     enabled: chargeId !== 0,
   });
 
-  const { data: payFors } = useQuery<AxiosResponse<Bills>>({
+  const { data: payFors } = useQuery<AxiosResponse<Bills[]>>({
     queryKey: ['payFors'],
-    queryFn: () => getBills(1),
+    queryFn: () => getBills(meetId as number),
+  });
+  const { data: user } = useQuery<AxiosResponse<Account>>({
+    queryKey: ['user'],
+    queryFn: getUser,
   });
 
   const deleteBillMutation = useMutation({
@@ -49,6 +55,7 @@ function BillPage() {
     onSuccess: () => {
       toggleOpenDeleteModal();
       toggleOpenConfirmModal();
+      refetchBills();
     },
   });
 
@@ -67,31 +74,37 @@ function BillPage() {
   };
 
   const onClickBill = (id: number, name: string) => {
-    if (userName === name) {
-      setChargeId(id);
+    setChargeId(id);
+    if (user?.data.nickname === name) {
       return toggleOpenUserModal();
     }
     toggleOpenNotUserModal();
   };
 
   const onClickDelete = () => {
-    deleteBillMutation.mutate({ meetId: Number(params.id), chargeId });
+    deleteBillMutation.mutate({ meetId: meetId as number, chargeId });
   };
+
+  useEffect(() => {
+    refetchBill();
+  }, [chargeId]);
+
+  if (!bills) return;
 
   return (
     <div ref={captureRef}>
       <TabBar rightType="shareBtn" onClick={onClickShare} />
-      {bills ? (
+      {bills?.data.length > 0 ? (
         <>
           {payFors && <BillMyPay payFors={payFors.data} />}
-          {bills.data.charges.map((bill) => (
+          {bills.data.map((bill) => (
             <BillContent
               key={bill.chargeId}
               content={bill.content}
               payeeNickname={bill.payeeNickname}
               totalPrice={bill.totalPrice}
               peopleNumber={bill.peopleNumber}
-              payers={bill.payers}
+              members={bill.members}
               onClick={() => onClickBill(bill.chargeId, bill.payeeNickname)}
             />
           ))}
@@ -99,7 +112,10 @@ function BillPage() {
       ) : (
         <BillNull />
       )}
-      <StyledButton name="정산 시작하기" onClick={() => router.push('/meet/1/bill/upsert')} />
+      <StyledButton
+        name="정산 시작하기"
+        onClick={() => router.push(`/meet/${meetId}/bill/upsert`)}
+      />
 
       {isOpenShareModal && (
         <Modal type="Ok" onOk={toggleOpenShareModal} width={294}>
@@ -126,7 +142,7 @@ function BillPage() {
           width={294}
         >
           <Text>
-            <Emphasize>{bill?.data.content}</Emphasize>
+            <Emphasize>{bill?.data[0].content}</Emphasize>
             <br />
             정산을 수정/삭제하시겠습니까?
           </Text>
@@ -142,7 +158,7 @@ function BillPage() {
           width={294}
         >
           <Text>
-            <Emphasize>{bill?.data.content}</Emphasize>을 삭제하시겠어요?
+            <Emphasize>{bill?.data[0].content}</Emphasize>을 삭제하시겠어요?
             <DisabledText>정산을 삭제하면 복구할 수 없어요.</DisabledText>
           </Text>
         </Modal>

@@ -203,7 +203,8 @@ function MeetIdPage() {
         />
         <MeetingBillItem
           isAfterMeet={meetStatus === MEET_STATUS.BILL_AFTER_MEET}
-          billCount={bills.data.length}
+          // billCount={bills.data.length}
+          billCount={0}
         />
       </Container>
       <MeetingButtons meetId={meetId} status={meetStatus} />

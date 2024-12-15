@@ -16,6 +16,7 @@ import React, { useEffect, useState } from 'react';
 
 const BillUpsertPage = () => {
   const params = useParams();
+  const meetId = (params?.id && Number(params.id)) || null;
   const searchParams = useSearchParams();
   const router = useRouter();
   const [current, setCurrent] = useState(0);
@@ -56,11 +57,12 @@ const BillUpsertPage = () => {
 
   const { data: meet } = useQuery<AxiosResponse<MeetResponse>>({
     queryKey: ['meet'],
-    queryFn: () => getMeet(Number(params.id)),
+    queryFn: () => getMeet(meetId as number),
+    enabled: meetId !== null,
   });
 
-  const { data: bill } = useQuery<AxiosResponse<Bill>>({
-    queryKey: ['bill'],
+  const { data: bill } = useQuery<AxiosResponse>({
+    queryKey: ['bill', searchParam],
     queryFn: () => getBill({ meetId: Number(params.id), chargeId: searchParam }),
     enabled: searchParam !== 0,
   });
@@ -115,7 +117,7 @@ const BillUpsertPage = () => {
           memberIds: [],
         }));
         meet.data.members.map((member) => {
-          if (member.userInfo.isMe) {
+          if (member.isMe) {
             setCreateData((prev) => ({
               ...prev,
               memberIds: [member.userInfo.userId],
@@ -142,9 +144,12 @@ const BillUpsertPage = () => {
   };
 
   const onClickSubmitBtn = () => {
-    toggleOpenModal();
+    // toggleOpenModal();
     if (searchParam === 0) {
-      createBillMutation.mutate({ meetId: Number(params.id), data: createData });
+      createBillMutation.mutate({
+        meetId: meetId as number,
+        data: createData,
+      });
     } else {
       updateBillMutation.mutate({
         meetId: Number(params.id),
@@ -157,7 +162,7 @@ const BillUpsertPage = () => {
   useEffect(() => {
     if (meet) {
       meet.data.members.map((member) => {
-        if (member.userInfo.isMe) {
+        if (member.isMe) {
           setCreateData((prev) => ({
             ...prev,
             memberIds: [member.userInfo.userId],
@@ -171,13 +176,16 @@ const BillUpsertPage = () => {
     if (bill) {
       setCreateData((prev) => ({
         ...prev,
-        content: bill.data.content,
-        totalPrice: bill.data.totalPrice,
-        peopleNumber: bill.data.peopleNumber,
-        memberIds: bill.data.members.map((member) => member.userId),
+        content: bill.data[0].content,
+        totalPrice: bill.data[0].totalPrice,
+        peopleNumber: bill.data[0].peopleNumber,
+        memberIds: bill.data[0].members.map(
+          (member: { isMe: boolean; me: boolean; memberId: number; nickName: string }) =>
+            member.memberId,
+        ),
       }));
-      setInputName(bill.data.content);
-      setInputPrice(String(bill.data.totalPrice));
+      setInputName(bill.data[0].content);
+      setInputPrice(String(bill.data[0].totalPrice));
     }
   }, [bill]);
 

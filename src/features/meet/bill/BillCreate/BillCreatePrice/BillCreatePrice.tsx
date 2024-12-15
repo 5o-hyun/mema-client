@@ -77,7 +77,7 @@ const BillCreatePrice = ({
             <button
               key={member.userInfo.userId}
               className={`billCreatePersonBtn ${data.memberIds.includes(member.userInfo.userId) && 'active'}`}
-              disabled={member.userInfo.isMe}
+              disabled={member.isMe}
               onClick={() => onClickSelect(member.userInfo.userId)}
             >
               {member.userInfo.nickname}
@@ -88,12 +88,17 @@ const BillCreatePrice = ({
       <div className="billCreateBottom">
         <div className="wrapper">
           <p>
-            <b>{value ? value : 0}</b>원 ÷ <b>{data.memberIds.length}</b>명
+            <b>{Number(value || 0).toLocaleString('ko-KR')}</b>원 ÷ <b>{data.memberIds.length}</b>명
           </p>
           <p>
             인당 결제 금액은
             <br />
-            <b>{Number(value) / data.memberIds.length}</b>원 이에요!
+            <b>
+              {((Math.round(Number(value) / data.memberIds.length) * 100) / 100).toLocaleString(
+                'ko-KR',
+              )}
+            </b>
+            원 이에요!
           </p>
         </div>
         <Button

@@ -1,35 +1,56 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import Modal from '@/components/Modal';
 import styled from 'styled-components';
 import { Emphasize, Text } from '@/components/Modal/modalTypography';
 import useToggle from '@/lib/hooks/useToggle';
 import ManagementContent from './ManagementContent';
-import { useMutation } from '@tanstack/react-query';
-import { deleteMeet } from '@/lib/api/meets';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { deleteMeet, getHomeMeets } from '@/lib/api/meets';
 import { useRouter } from 'next/navigation';
+import { HomeMeetsResponse } from '@/types/meets';
+import { AxiosResponse } from 'axios';
 
 function ManagementGrid() {
   const router = useRouter();
+  const [meetId, setMeetId] = useState<number>(0);
   const [isOpenModal, toggleOpenModal] = useToggle();
   const [isOpenConfirmModal, toggleOpenConfirmModal] = useToggle();
+
+  const { data: meets, refetch: refetchMeets } = useQuery<AxiosResponse<HomeMeetsResponse>>({
+    queryKey: ['meets'],
+    queryFn: getHomeMeets,
+  });
 
   const deleteMeetMutation = useMutation({
     mutationFn: deleteMeet,
     onSuccess: () => {
       toggleOpenModal();
+      refetchMeets();
       toggleOpenConfirmModal();
     },
   });
 
   const onDelete = () => {
-    deleteMeetMutation.mutate(1);
+    deleteMeetMutation.mutate(meetId);
   };
 
   return (
     <>
       <Container>
-        <ManagementContent onDelete={toggleOpenModal} />
+        {meets?.data.upcomingMeets.map((meet) => (
+          <ManagementContent
+            key={meet.meetId}
+            meet={meet}
+            onDelete={(id: number) => {
+              setMeetId(id);
+              toggleOpenModal();
+            }}
+          />
+        ))}
+        {meets?.data.pastMeets.map((meet) => (
+          <ManagementContent key={meet.meetId} meet={meet} onDelete={toggleOpenModal} />
+        ))}
       </Container>
 
       {isOpenModal && (

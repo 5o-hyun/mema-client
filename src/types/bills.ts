@@ -5,9 +5,11 @@ export type Bills = {
   totalPrice: number;
   peopleNumber: number;
   payeeNickname: string;
-  payers: {
-    payerId: number;
-    payerNickname: string;
+  members: {
+    isMe: boolean;
+    me: boolean;
+    memberId: number;
+    nickname: string;
   }[];
 };
 
@@ -19,8 +21,9 @@ export type Bill = {
   peopleNumber: number;
   payeeNickname: string;
   members: {
-    userId: number;
-    nickname: string;
     isMe: boolean;
+    me: boolean;
+    memberId: number;
+    nickname: string;
   }[];
 };

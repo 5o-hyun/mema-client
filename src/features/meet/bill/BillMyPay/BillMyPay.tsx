@@ -1,23 +1,30 @@
-import { Bills } from '@/types/bills';
+import { Bill, Bills } from '@/types/bills';
 import React from 'react';
 import styled from 'styled-components';
 
 type Props = {
-  payFors: Bills;
+  payFors: Bills[];
 };
 
 const BillMyPay = ({ payFors }: Props) => {
+  if (!payFors) return;
+
   return (
     <Container>
       <p className="paymentTitle">내가 보내야 할 돈</p>
       <div className="paymentContainer">
-        {payFors.charges.map((payFor) => (
+        {payFors.map((payFor) => (
           <p key={payFor.chargeId} className="payment">
             <span>
               <b className="paymentName">{payFor.payeeNickname}</b>님에게
             </span>
             <span>
-              <b className="paymentPrice">{payFor.totalPrice / payFor.peopleNumber}</b>원
+              <b className="paymentPrice">
+                {((Math.round(payFor.totalPrice / payFor.peopleNumber) * 100) / 100).toLocaleString(
+                  'ko-KR',
+                )}
+              </b>
+              원
             </span>
           </p>
         ))}

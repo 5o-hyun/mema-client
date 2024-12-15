@@ -7,9 +7,11 @@ type Props = {
   payeeNickname: string;
   totalPrice: number;
   peopleNumber: number;
-  payers: {
-    payerId: number;
-    payerNickname: string;
+  members: {
+    isMe: boolean;
+    me: boolean;
+    memberId: number;
+    nickname: string;
   }[];
   onClick: () => void;
 };
@@ -19,7 +21,7 @@ const BillContent = ({
   payeeNickname,
   totalPrice,
   peopleNumber,
-  payers,
+  members,
   onClick,
 }: Props) => {
   return (
@@ -34,13 +36,16 @@ const BillContent = ({
         </p>
         <p>인당 결제 금액은</p>
         <p>
-          <b className="price">{totalPrice / peopleNumber}</b>원 이에요!
+          <b className="price">
+            {((Math.round(totalPrice / peopleNumber) * 100) / 100).toLocaleString('ko-KR')}
+          </b>
+          원 이에요!
         </p>
       </div>
       <div className="billContentPayment">
         <p>함께한 사람은</p>
         <p>
-          <b>{payers.map((payer) => payer.payerNickname).join(', ')}</b> 입니다!
+          <b>{members?.map((member) => member.nickname).join(', ')}</b> 입니다!
         </p>
       </div>
     </Container>

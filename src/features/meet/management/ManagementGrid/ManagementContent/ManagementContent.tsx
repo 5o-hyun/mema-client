@@ -1,30 +1,34 @@
 'use client';
 import Button from '@/components/Button';
+import { Meet } from '@/types/meets';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 import styled from 'styled-components';
 
 type ManagementContentProps = {
-  onDelete: () => void;
+  meet: Meet;
+  onDelete: (id: number) => void;
 };
 
-function ManagementContent({ onDelete }: ManagementContentProps) {
+function ManagementContent({ meet, onDelete }: ManagementContentProps) {
   const router = useRouter();
+  console.log(meet);
 
   return (
     <Container>
-      <p className="title">찜닭머그러가자</p>
-      <p className="totalPerson">인원 5명</p>
+      <p className="title">{meet.meetName}</p>
+      <p className="totalPerson">인원 {meet.userInfo.length}명</p>
       <div className="person">
-        <p>김짜장,</p>
-        <p>불닭먹고싶다,</p>
-        <p>마라엽기떡볶이,</p>
-        <p>박짬뽕,</p>
-        <p>지니는찜닭이조아</p>
+        {meet.userInfo.map((user, index) => (
+          <p key={user.userId}>
+            {user.nickname}
+            {index !== meet.userInfo.length - 1 && ','}
+          </p>
+        ))}
       </div>
       <div className="btnGroup">
-        <Button name="미팅 삭제" buttonType="gray" onClick={onDelete} />
-        <Button name="미팅명 변경" onClick={() => router.push('/meet/management/1')} />
+        <Button name="미팅 삭제" buttonType="gray" onClick={() => onDelete(meet.meetId)} />
+        <Button name="미팅명 변경" onClick={() => router.push(`/meet/management/${meet.meetId}`)} />
       </div>
     </Container>
   );
