@@ -25,18 +25,20 @@ const MeetingStatusItem = ({
   };
   return (
     <Container>
-      <SpaceBetweenRow>
-        <Row>
-          <StatusLabel $status={status}>{labelName[status]}</StatusLabel>
-          <p>{title}</p>
-          {warningMessage && <WarningMessage>{warningMessage}</WarningMessage>}
-          <p className="blueText">{voteResult}</p>
-        </Row>
-        <div>
-          <CountText $isHighlighted={votedMembers > 0}>{votedMembers}</CountText>
-          <CountText $isHighlighted={false}>&nbsp;/&nbsp;{totalMembers}</CountText>
-        </div>
-      </SpaceBetweenRow>
+      <Header>
+        <SpaceBetweenRow>
+          <Row>
+            <StatusLabel $status={status}>{labelName[status]}</StatusLabel>
+            <p>{title}</p>
+            {voteResult && <p className="blueText">{voteResult}</p>}
+          </Row>
+          <div>
+            <CountText $isHighlighted={votedMembers > 0}>{votedMembers}</CountText>
+            <CountText $isHighlighted={false}>&nbsp;/&nbsp;{totalMembers}</CountText>
+          </div>
+        </SpaceBetweenRow>
+        <Row>{warningMessage && <WarningMessage>{warningMessage}</WarningMessage>}</Row>
+      </Header>
       <Row>
         <ProgressBar currentValue={votedMembers} maxValue={totalMembers} />
       </Row>
@@ -56,6 +58,12 @@ const Container = styled.div`
   .blueText {
     color: ${({ theme }) => theme.colors.primary.default};
   }
+`;
+
+const Header = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 `;
 
 const Row = styled.div`

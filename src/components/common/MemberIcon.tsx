@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 
+import Icon0 from '@/assets/profileIcons/svg/0.svg';
 import Icon1 from '@/assets/profileIcons/svg/1.svg';
 import Icon2 from '@/assets/profileIcons/svg/2.svg';
 import Icon3 from '@/assets/profileIcons/svg/3.svg';
@@ -13,8 +14,10 @@ import Icon10 from '@/assets/profileIcons/svg/10.svg';
 import Icon11 from '@/assets/profileIcons/svg/11.svg';
 import Icon12 from '@/assets/profileIcons/svg/12.svg';
 import React from 'react';
+import { MAX_BADGE_COUNT } from '@/constants/accountConst';
 
 const iconMap: Record<number, React.FC<React.SVGProps<SVGSVGElement>>> = {
+  0: Icon0,
   1: Icon1,
   2: Icon2,
   3: Icon3,
@@ -48,10 +51,8 @@ const MemberIcon: React.FC<MemberIconProps> = ({
   selected = false,
   onClick,
 }) => {
-  const IconComponent = iconMap[puzzleId];
-  if (!IconComponent) {
-    return null;
-  }
+  const validPuzzleId = puzzleId > MAX_BADGE_COUNT ? 0 : puzzleId;
+  const IconComponent = iconMap[validPuzzleId] || iconMap[0];
 
   return (
     <IconWrapper

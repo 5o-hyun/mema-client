@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import React from 'react';
 import LoginForm from '@/components/LoginForm';
-import { useInputState } from '@/hooks/useInputState';
+import { useInputState } from '@/lib/hooks/useInputState';
 import Button from '@/components/Button';
 import Logo from '/public/svgs/common/logo.svg';
 import TitleWithDescription from '@/components/common/TitleWithDescription';
@@ -16,7 +16,7 @@ const LoginPage = () => {
   const router = useRouter();
   const email = useInputState();
   const password = useInputState();
-  const { userRole, setUserRole } = useUserRoleStore();
+  const { setUserRole } = useUserRoleStore();
 
   const loginMutation = useMutation({
     mutationFn: login,
@@ -46,7 +46,7 @@ const LoginPage = () => {
       <TitleWithDescription
         title={
           <>
-            <Logo fill="#238AFF" />
+            <MemaFontLogo fill="#238AFF" />
             에서 친구들과
             <br /> 더 쉬운 모임을 하고 싶다면?
           </>
@@ -57,14 +57,6 @@ const LoginPage = () => {
         <LoginForm email={email} password={password} />
         <StyledButton name="로그인하기" type="submit" disabled={!(email.value && password.value)} />
       </form>
-
-      {/*<LoginForm email={email} password={password} />*/}
-      {/*<StyledButton*/}
-      {/*  name="로그인하기"*/}
-      {/*  type="submit"*/}
-      {/*  disabled={!(email.value && password.value)}*/}
-      {/*  onClick={handleLogin}*/}
-      {/*/>*/}
     </>
   );
 };
@@ -75,4 +67,8 @@ const StyledButton = styled(Button)`
   position: absolute;
   bottom: 34px;
   width: calc(100% - 32px);
+`;
+
+const MemaFontLogo = styled(Logo)`
+  margin-right: 8px;
 `;

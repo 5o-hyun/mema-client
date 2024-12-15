@@ -29,8 +29,8 @@ const MyPage = () => {
       />
       <Container>
         <MyPageProfileIcon
-          puzzleId={user?.data.puzId || 0}
-          puzzleColor={user?.data.puzColor || 'blue'}
+          puzzleId={user?.data.puzzleId || 0}
+          puzzleColor={user?.data.puzzleColor || 'blue'}
         />
         <NicknameButton nickname={user?.data.nickname || ''} />
         <MyPageCounter

@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { useInputState } from '@/hooks/useInputState';
+import { useInputState } from '@/lib/hooks/useInputState';
 import Modal from '@/components/Modal';
 import { useRouter } from 'next/navigation';
 import useToggle from '@/lib/hooks/useToggle';

@@ -14,7 +14,7 @@ const BillStatusItem = ({ status, count }: Props) => {
   return (
     <Container>
       <Row>
-        <StatusLabel status={status}>{statusLabel[status]}</StatusLabel>
+        <StatusLabel $status={status}>{statusLabel[status]}</StatusLabel>
         <p>정산하기</p>
       </Row>
       <Row>
@@ -54,8 +54,8 @@ const Row = styled.div`
   gap: 8px;
 `;
 
-const StatusLabel = styled.p<{ status: 'notStarted' | 'completed' }>`
+const StatusLabel = styled.p<{ $status: 'notStarted' | 'completed' }>`
   ${({ theme }) => theme.fonts.title.xs};
-  color: ${({ status, theme }) =>
-    status === 'notStarted' ? theme.colors.gray[4] : theme.colors.primary.default};
+  color: ${({ $status, theme }) =>
+    $status === 'notStarted' ? theme.colors.gray[4] : theme.colors.primary.default};
 `;

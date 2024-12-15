@@ -14,6 +14,6 @@ export const useUserRoleStore = create(
       userRole: 'ROLE_NAVER',
       setUserRole: (role) => set({ userRole: role }),
     }),
-    { name: 'useRole' },
+    { name: 'user-role-store' },
   ),
 );

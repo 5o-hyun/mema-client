@@ -1,21 +1,55 @@
 import styled from 'styled-components';
 import Button from '@/components/Button';
+import { ScheduleStatus } from '@/types/schedules';
+import { SCHEDULE_STATUS } from '@/constants/scheduleConst';
+import { useRouter } from 'next/navigation';
 
 interface Props {
-  type: 'inProgress' | 'needReVote' | 'needComplete' | 'complete';
-  auth: 'host' | 'member';
+  meetId: number | null;
+  type: ScheduleStatus;
+  date: Date | null;
+  onClickSelectFinalDate: () => void;
+  onClickReVote: () => void;
+  errorModalToggle: () => void;
+  setErrorMessage: (str: string) => void;
 }
 
-const CalendarViewButtons = ({ type, auth }: Props) => {
+const CalendarViewButtons = ({
+  meetId,
+  type,
+  date,
+  onClickSelectFinalDate,
+  onClickReVote,
+  errorModalToggle,
+  setErrorMessage,
+}: Props) => {
+  const router = useRouter();
+  const handleClickFinalDate = () => {
+    if (date !== null) onClickSelectFinalDate();
+    else {
+      setErrorMessage('날짜를 선택해주세요.');
+      errorModalToggle();
+    }
+  };
   return (
     <Container>
-      {(type === 'inProgress' || (type === 'needReVote' && auth === 'member')) && (
-        <Button name="수정하기" />
+      {type === SCHEDULE_STATUS.IN_PROGRESS && (
+        <Button name="수정하기" onClick={() => router.push(`/meet/${meetId}/schedule/vote`)} />
       )}
-      {type === 'needReVote' && auth === 'host' && (
+      {type === SCHEDULE_STATUS.NEED_REVOTE && (
         <>
-          <Button name="재투표하기" buttonType="gray" />
-          <Button name="수정하기" />
+          <Button name="재투표하기" onClick={onClickReVote} />
+          <Button
+            name="수정하기"
+            buttonType="gray"
+            onClick={() => router.push(`/meet/${meetId}/schedule/vote`)}
+          />
+        </>
+      )}
+      {type === SCHEDULE_STATUS.NEED_COMPLETE && (
+        <>
+          <Button name="재투표하기" buttonType="gray" onClick={onClickReVote} />
+          <Button name="날짜 고르기" onClick={handleClickFinalDate} />
         </>
       )}
     </Container>

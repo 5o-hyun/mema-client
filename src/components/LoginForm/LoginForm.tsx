@@ -4,7 +4,7 @@ import Label from '@/components/common/Label';
 import Input from '@/components/Input';
 import ToggleVisibilityButton from '@/components/common/ToggleVisibilityButton';
 import styled from 'styled-components';
-import { UseInputStateReturn } from '@/hooks/useInputState';
+import { UseInputStateReturn } from '@/lib/hooks/useInputState';
 
 type LoginFormProps = {
   email: UseInputStateReturn;

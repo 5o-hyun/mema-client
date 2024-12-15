@@ -1,20 +1,21 @@
 import styled from 'styled-components';
-import MemberIcon from '@/components/common/MemberIcon';
 import { MoreHorizontal } from 'react-feather';
+import { Member } from '@/types/meets';
+import MemberIcon from '@/components/common/MemberIcon';
+import { MAX_VISIBLE_MEET_MEMBER_ICON_COUNT } from '@/constants/meetConst';
 
 type IconStackProps = {
-  members: { puzzleId: number; puzzleColor: string }[];
+  members: Member[];
 };
 
 const MemberIconStack: React.FC<IconStackProps> = ({ members }) => {
-  const MAX_ICONS = 7; // 최대 표시 아이콘 개수
-
+  // TODO: members 정렬 필요 여부 Figma 문의함.
   return (
     <MembersWrapper>
-      {members.slice(0, MAX_ICONS).map((member, index) => (
+      {members.slice(0, MAX_VISIBLE_MEET_MEMBER_ICON_COUNT).map((member, index) => (
         <StackedIcon
           key={index}
-          style={{ zIndex: MAX_ICONS - index }} // 앞쪽 아이콘이 위로 쌓이도록 설정
+          style={{ zIndex: MAX_VISIBLE_MEET_MEMBER_ICON_COUNT - index }} // 앞쪽 아이콘이 위로 쌓이도록 설정
         >
           <MemberIcon
             puzzleId={member.puzzleId}
@@ -24,7 +25,7 @@ const MemberIconStack: React.FC<IconStackProps> = ({ members }) => {
           />
         </StackedIcon>
       ))}
-      {members.length > MAX_ICONS && (
+      {members.length > MAX_VISIBLE_MEET_MEMBER_ICON_COUNT && (
         <MoreWrapper>
           <MoreHorizontal />
         </MoreWrapper>

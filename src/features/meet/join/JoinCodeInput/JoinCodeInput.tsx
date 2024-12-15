@@ -1,10 +1,8 @@
 'use client';
 import styled from 'styled-components';
 import React from 'react';
-import Button from '@/components/Button';
-import { UseInputStateReturn } from '@/hooks/useInputState';
+import { UseInputStateReturn } from '@/lib/hooks/useInputState';
 import InputWrapper from '@/components/Input/InputWrapper';
-import Label from '@/components/common/Label';
 import Input from '@/components/Input';
 
 type JoinCodeInputProps = {

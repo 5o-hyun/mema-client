@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import Button from '@/components/Button';
 import { useRouter } from 'next/navigation';
 import PasswordInput from '@/features/account/PasswordInput';
-import { useInputState } from '@/hooks/useInputState';
+import { useInputState } from '@/lib/hooks/useInputState';
 
 const EditPasswordPage = () => {
   const router = useRouter();

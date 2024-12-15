@@ -34,9 +34,10 @@ const StyledLabel = styled.label<{ $isError: boolean; $isEmpty: boolean; $isFocu
   font-weight: ${(props) => props.theme.fonts.text['md'].fontWeight};
   letter-spacing: ${(props) => props.theme.fonts.text['md'].letterSpacing};
   color: ${({ $isError, $isEmpty, $isFocused, theme }) => {
-    if (!$isEmpty && $isError) return theme.colors.red;
+    if ($isError && $isFocused && !$isEmpty) return theme.colors.red;
     if ($isFocused) return theme.colors.primary.default;
-    if ($isEmpty) return theme.colors.gray[3];
+    if ($isEmpty) return theme.colors.gray[4];
+    if ($isError) return theme.colors.red;
     return theme.colors.gray[3];
   }};
 `;

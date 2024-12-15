@@ -1,5 +1,4 @@
 import axios from 'axios';
-import { redirect } from 'next/navigation';
 import { useUserRoleStore } from '@/store/userRoleStore';
 
 const baseURL = `${process.env.NEXT_PUBLIC_SERVER_URL}`;
@@ -29,10 +28,16 @@ defaultAxios.interceptors.response.use(
   (error) => {
     const { userRole } = useUserRoleStore.getState();
 
-    if (error.response && error.response.status === 401) {
-      if (typeof window !== 'undefined' && userRole === 'ROLE_CUSTOM') {
-        localStorage.removeItem('authToken');
-        redirect('/');
+    if (error.response) {
+      const errorMessage = error.response.data?.message;
+      if (
+        (error.response && error.response.status === 401) ||
+        (errorMessage && errorMessage.includes('JWT expired'))
+      ) {
+        if (typeof window !== 'undefined' && userRole === 'ROLE_CUSTOM') {
+          localStorage.removeItem('authToken');
+          window.location.href = '/';
+        }
       }
     }
 

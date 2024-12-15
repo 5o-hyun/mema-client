@@ -1,7 +1,7 @@
 'use client';
 import Logo from '/public/svgs/common/logo.svg';
 import React, { useState } from 'react';
-import { useInputState } from '@/hooks/useInputState';
+import { useInputState } from '@/lib/hooks/useInputState';
 import Modal from '@/components/Modal';
 import { useRouter } from 'next/navigation';
 import useToggle from '@/lib/hooks/useToggle';
@@ -16,13 +16,19 @@ import PasswordInput from '@/features/account/PasswordInput';
 import { useMutation } from '@tanstack/react-query';
 import { signup } from '@/lib/api/account';
 
+const passwordValidation = (value: string): boolean => {
+  // 알파벳, 숫자 조합의 8~12자리 확인
+  const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,12}$/;
+  return passwordRegex.test(value);
+};
+
 const SignupPage = () => {
   const router = useRouter();
   const nickname = useInputState();
   const email = useInputState();
-  const password = useInputState();
+  const password = useInputState({ validate: passwordValidation });
   const verificationCode = useInputState();
-
+  const [isVerified, setVerification] = useState(true); // TODO : 고도화 때 인증 기능 추가하면 기본값 false로 수정
   const [currentStep, setCurrentStep] = useState(0);
   const [isOpenModal, toggleOpenModal] = useToggle();
 
@@ -30,7 +36,6 @@ const SignupPage = () => {
     setCurrentStep((prev) => ++prev);
   };
 
-  const [isVerified, setVerification] = useState(false);
   const handleRequestVerification = () => {
     console.log('이메일 인증 요청 보내기');
     setVerification(!isVerified);
@@ -76,7 +81,11 @@ const SignupPage = () => {
             />
             <PasswordInput password={password} />
           </Container>
-          <StyledButton name="다음으로" disabled={!isVerified} onClick={next} />
+          <StyledButton
+            name="다음으로"
+            disabled={!email.value || !password.value /*TODO: !isVerified*/}
+            onClick={next}
+          />
         </>
       ),
       description: '서비스를 이용하실 이메일과 비밀번호를 알려주세요!',

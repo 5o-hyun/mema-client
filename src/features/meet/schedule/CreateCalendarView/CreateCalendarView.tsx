@@ -1,30 +1,38 @@
 'use client';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Button from '@/components/Button';
-import TabBar from '@/components/TabBar';
-import { formatDate } from '@/lib/utils/formatDate';
+import { formatDate, isSameDate } from '@/lib/utils/dateUtils';
 import CustomCalendar from '@/components/CustomCalendar/CustomCalendar';
+import { CALENDAR_MODE, MAX_SCHEDULE_SELECTABLE_DATE } from '@/constants/scheduleConst';
 
-type VoteDatesProps = {
+type Props = {
   type: 'create' | 'edit';
-  onClickBack: () => void;
   onClickComplete: () => void;
-  selectedDates: Date[];
+  mySelectedDates: Date[];
   onChangeDates: (dates: Date[]) => void;
 };
 
-const VoteDates = ({
+const CreateCalendarView = ({
   type = 'create',
-  onClickBack,
   onClickComplete,
-  selectedDates,
+  mySelectedDates,
   onChangeDates,
-}: VoteDatesProps) => {
+}: Props) => {
+  const [lastSelectedDate, setLastSelectedDate] = useState<Date | null>(null);
+
+  const onClickDate = (clickedDate: Date) => {
+    const isAlreadySelected = mySelectedDates.some((date) => isSameDate(date, clickedDate));
+    if (isAlreadySelected) {
+      setLastSelectedDate(null);
+    } else {
+      setLastSelectedDate(clickedDate);
+    }
+  };
+
   return (
     <>
       <Container>
-        <TabBar onClick={onClickBack} />
         <p className="title">
           만남이 가능한 날짜를
           <br />
@@ -32,15 +40,16 @@ const VoteDates = ({
         </p>
 
         <CustomCalendar
-          mode="select"
+          mode={CALENDAR_MODE.SELECT_MULTI}
           voteStartDay={new Date()}
-          mySelectedDates={selectedDates}
-          maxSelectableDate={60}
+          mySelectedDates={mySelectedDates}
+          maxSelectableDate={MAX_SCHEDULE_SELECTABLE_DATE}
           onChangeSelected={(dates) => onChangeDates(dates)}
+          onClick={onClickDate}
         />
 
         <StyledDiv>
-          {selectedDates.length === 0 ? (
+          {mySelectedDates.length === 0 || lastSelectedDate === null ? (
             <p className="grayish-desc">
               날짜를 선택하면 그 날에
               <br />
@@ -48,12 +57,10 @@ const VoteDates = ({
             </p>
           ) : (
             <>
-              <span className="emphasize-desc">
-                {formatDate(selectedDates[selectedDates.length - 1], 'MM월 DD일')}
-              </span>
-              에 만날 수 있는 사람은
+              <span className="emphasize-desc">{formatDate(lastSelectedDate, 'MM월 DD일')}</span>
+              에 만날 수 있는 사람은 아직 없어요.
               <br />
-              <span className="bold-desc">닉네임, 닉네임, 닉네임 이에요.</span>
+              <span className="bold-desc"></span>
             </>
           )}
         </StyledDiv>
@@ -61,7 +68,7 @@ const VoteDates = ({
           <StyledButton
             name="선택 완료!"
             onClick={onClickComplete}
-            disabled={selectedDates.length === 0}
+            disabled={mySelectedDates.length === 0}
           />
         ) : (
           <StyledButton name="수정하기" onClick={onClickComplete} />
@@ -71,7 +78,7 @@ const VoteDates = ({
   );
 };
 
-export default VoteDates;
+export default CreateCalendarView;
 
 const Container = styled.div`
   display: flex;

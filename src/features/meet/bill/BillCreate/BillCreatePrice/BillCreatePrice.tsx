@@ -6,6 +6,7 @@ import InputWrapper from '@/components/Input/InputWrapper';
 import Button from '@/components/Button';
 import TabBar from '@/components/TabBar';
 import { useSearchParams } from 'next/navigation';
+import { MeetMember } from '@/types/meets';
 
 type Props = {
   data: {
@@ -14,13 +15,7 @@ type Props = {
     peopleNumber: number;
     memberIds: number[];
   };
-  members: {
-    userId: number;
-    nickname: string;
-    puzzleId?: number;
-    puzzleColor?: string;
-    isMe?: boolean;
-  }[];
+  members: MeetMember[];
   value: string;
   isAllSelected: boolean;
   isFocused: boolean;
@@ -80,12 +75,12 @@ const BillCreatePrice = ({
         <div className="billCreatePersonBtnG">
           {members.map((member) => (
             <button
-              key={member.userId}
-              className={`billCreatePersonBtn ${data.memberIds.includes(member.userId) && 'active'}`}
-              disabled={member.isMe}
-              onClick={() => onClickSelect(member.userId)}
+              key={member.userInfo.userId}
+              className={`billCreatePersonBtn ${data.memberIds.includes(member.userInfo.userId) && 'active'}`}
+              disabled={member.userInfo.isMe}
+              onClick={() => onClickSelect(member.userInfo.userId)}
             >
-              {member.nickname}
+              {member.userInfo.nickname}
             </button>
           ))}
         </div>

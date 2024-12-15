@@ -24,8 +24,8 @@ const IntroButtons = () => {
       <StyledCustomButton name="이메일로 로그인" onClick={() => router.push('/login')} />
       <TextButton>
         <Link onClick={() => router.push('/signup')}>회원가입</Link>
-        <span className="divider">|</span>
-        <Link onClick={() => router.push('/findpw')}> 비밀번호 찾기</Link>
+        {/*<span className="divider">|</span>*/}
+        {/*<Link onClick={() => router.push('/findpw')}> 비밀번호 찾기</Link>*/}
       </TextButton>
     </ButtonContainer>
   );

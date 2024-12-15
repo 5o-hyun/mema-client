@@ -4,6 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 import { useRouter } from 'next/navigation';
 import GrayBoxContainer from '@/features/mypage/GrayBoxContainer';
+import Button from '@/components/Button';
 
 type Props = {
   selectedId: number;

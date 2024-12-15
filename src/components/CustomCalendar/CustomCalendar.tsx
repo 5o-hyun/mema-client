@@ -2,15 +2,11 @@
 import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { formatDate } from '@/lib/utils/formatDate';
+import { formatDate } from '@/lib/utils/dateUtils';
 import styled from 'styled-components';
 import { ChevronLeft, ChevronRight } from 'react-feather';
-
-type CalendarMode = 'select' | 'view' | 'complete' | 'result';
-// select : 다중 선택 가능한 모드
-// view : 입력 현황 - 최종 날짜 선택 불가능
-// complete : 입력 현황 - 최종 날짜 선택 가능 (for only host)
-// result : 최종 날짜 선택 결과
+import { CalendarMode } from '@/types/schedules';
+import { CALENDAR_MODE } from '@/constants/scheduleConst';
 
 interface CustomCalendarProps {
   mode: CalendarMode;
@@ -33,8 +29,6 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
   mySelectedDates = [],
   clickedDate = null,
 }) => {
-  console.log('allSelectedDates : ', allSelectedDates);
-  console.log('mySelectedDates : ', mySelectedDates);
   const MIN_DATE = new Date(
     voteStartDay.getFullYear(),
     voteStartDay.getMonth(),
@@ -63,7 +57,7 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
   };
 
   const handleDateClick = (clickedDate: Date) => {
-    if (mode === 'select' && onChangeSelected) {
+    if (mode === CALENDAR_MODE.SELECT_MULTI && onChangeSelected) {
       const isAlreadySelected = checkIfDateSelected(clickedDate);
 
       // 클릭한 날짜가 선택된 날짜이면 선택 해제
@@ -112,14 +106,11 @@ const CustomCalendar: React.FC<CustomCalendarProps> = ({
         maxDate={MAX_DATE}
         onClickDay={handleDateClick}
         tileClassName={({ date }) => {
-          if (mode === 'select' || mode === 'view') {
-            if (checkIfDateSelectedByOthers(date)) return 'grayish-selected';
+          if (mode === CALENDAR_MODE.SELECT_MULTI || mode === CALENDAR_MODE.VIEW) {
             if (checkIfDateSelected(date)) return 'selected';
-          } else if (mode === 'complete') {
+            if (checkIfDateSelectedByOthers(date)) return 'grayish-selected';
+          } else if (mode === CALENDAR_MODE.SELECT_ONE) {
             if (date.toDateString() === clickedDate?.toDateString()) return 'greenish-selected';
-            if (checkIfDateSelected(date)) return 'selected';
-            if (checkIfDateSelectedByOthers(date)) return 'grayish-selected';
-          } else if (mode === 'result') {
             if (checkIfDateSelected(date)) return 'selected';
             if (checkIfDateSelectedByOthers(date)) return 'grayish-selected';
           }

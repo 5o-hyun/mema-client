@@ -1,7 +1,7 @@
 'use client';
 import styled from 'styled-components';
 import React from 'react';
-import { UseInputStateReturn } from '@/hooks/useInputState';
+import { UseInputStateReturn } from '@/lib/hooks/useInputState';
 import InputWrapper from '@/components/Input/InputWrapper';
 import Label from '@/components/common/Label';
 import Input from '@/components/Input';
@@ -36,24 +36,24 @@ const EmailVerificationInputs: React.FC<Props> = ({
             onFocus={email.handleFocus}
             onBlur={email.handleBlur}
           />
-          <VerificationButton onClick={onClickRequestVerification}>인증 요청</VerificationButton>
+          {/*<VerificationButton onClick={onClickRequestVerification}>인증 요청</VerificationButton>*/}
         </InputWrapper>
-        <InputWrapper isFocused={verificationCode.isFocused} isEmpty={verificationCode.isEmpty}>
-          <Label isFocused={verificationCode.isFocused} isEmpty={verificationCode.isEmpty}>
-            인증 번호
-          </Label>
-          <Input
-            type="text"
-            value={verificationCode.value}
-            placeholder="인증번호를 입력하세요"
-            onChange={verificationCode.handleChange}
-            onFocus={verificationCode.handleFocus}
-            onBlur={verificationCode.handleBlur}
-          />
-          <VerificationButton disabled={isVerified} onClick={onClickVerifyCode}>
-            {isVerified ? '인증 완료' : '확인'}
-          </VerificationButton>
-        </InputWrapper>
+        {/*<InputWrapper isFocused={verificationCode.isFocused} isEmpty={verificationCode.isEmpty}>*/}
+        {/*  <Label isFocused={verificationCode.isFocused} isEmpty={verificationCode.isEmpty}>*/}
+        {/*    인증 번호*/}
+        {/*  </Label>*/}
+        {/*  <Input*/}
+        {/*    type="text"*/}
+        {/*    value={verificationCode.value}*/}
+        {/*    placeholder="인증번호를 입력하세요"*/}
+        {/*    onChange={verificationCode.handleChange}*/}
+        {/*    onFocus={verificationCode.handleFocus}*/}
+        {/*    onBlur={verificationCode.handleBlur}*/}
+        {/*  />*/}
+        {/*  <VerificationButton disabled={isVerified} onClick={onClickVerifyCode}>*/}
+        {/*    {isVerified ? '인증 완료' : '확인'}*/}
+        {/*  </VerificationButton>*/}
+        {/*</InputWrapper>*/}
       </Container>
     </>
   );

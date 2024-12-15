@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import DateTimePicker from '@/components/DateTimePicker';
 import Button from '@/components/Button';
@@ -15,10 +15,14 @@ const VoteDueDate = ({ onClickNext, date, onChange }: VoteDueDateProps) => {
     <>
       <Container>
         <p className="title">언제까지 투표할까요?</p>
-        <p className="description">날짜 투표 마감할 시간을 알려주세요</p>
-        <DateTimePicker date={date} onChange={onChange} />
-        <StyledButton name="다음으로" onClick={onClickNext} />
+        <p className="description">
+          날짜 투표 마감할 시간을 알려주세요
+          <br />
+          기한은 다음달까지 설정할 수 있어요.
+        </p>
       </Container>
+      <DateTimePicker date={date} onChange={onChange} />
+      <StyledButton name="다음으로" onClick={onClickNext} />
     </>
   );
 };
@@ -28,13 +32,14 @@ export default VoteDueDate;
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  margin: 50px 0 50px;
+  gap: 10px;
+
   .title {
     ${({ theme }) => theme.fonts.title.md};
-    margin: 50px 0 10px;
   }
   .description {
     ${({ theme }) => theme.fonts.text.lg};
-    margin-bottom: 70px;
   }
 `;
 

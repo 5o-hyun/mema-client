@@ -1,29 +1,29 @@
 import { defaultAxios } from '@/lib/api/defaultAxios';
 import { mockMeetData } from './mock/meets';
 import { AxiosResponse } from 'axios';
-import { Meet } from '@/types/meets';
+import { MeetResponse } from '@/types/meets';
 
 // 미팅 개별조회
-export const getMeet = async (meetId: number): Promise<AxiosResponse<Meet>> => {
-  console.log(`Mock API 호출: /meets/${meetId}`);
-  return new Promise<AxiosResponse<Meet>>((resolve) =>
-    setTimeout(
-      () =>
-        resolve({
-          data: mockMeetData,
-          status: 200,
-          statusText: 'OK',
-          headers: {},
-          config: {},
-          request: {},
-        } as AxiosResponse<Meet>),
-      500,
-    ),
-  );
-};
-// export const getMeet = async (meetId: number) => {
-//   return await defaultAxios.get(`/meets/${meetId}`);
+// export const getMeet = async (meetId: number): Promise<AxiosResponse<Meet>> => {
+//   console.log(`Mock API 호출: /meets/${meetId}`);
+//   return new Promise<AxiosResponse<Meet>>((resolve) =>
+//     setTimeout(
+//       () =>
+//         resolve({
+//           data: mockMeetData,
+//           status: 200,
+//           statusText: 'OK',
+//           headers: {},
+//           config: {},
+//           request: {},
+//         } as AxiosResponse<Meet>),
+//       500,
+//     ),
+//   );
 // };
+export const getMeet = async (meetId: number) => {
+  return await defaultAxios.get(`/meets/${meetId}`);
+};
 
 // 미팅 개별수정
 export const updateMeet = async ({ meetId, meetName }: { meetId: number; meetName: string }) => {
@@ -56,3 +56,18 @@ export const deleteMeet = async (meetId: number): Promise<AxiosResponse> => {
 // export const deleteMeet = async (meetId: number) => {
 //   await defaultAxios.delete(`/meets/${meetId}`);
 // };
+
+// 미팅 생성
+export const createMeet = async (data: { meetName: string }) => {
+  return await defaultAxios.post(`/meets`, data);
+};
+
+// 미팅 전체 조회
+export const getHomeMeets = async () => {
+  return await defaultAxios.get(`/meets/home`);
+};
+
+// 참여 코드 입력
+export const joinMeet = async (data: { joinCode: string }) => {
+  return await defaultAxios.post(`/meets/join`, data);
+};

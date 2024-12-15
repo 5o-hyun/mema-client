@@ -3,32 +3,28 @@ import React from 'react';
 import styled from 'styled-components';
 import { Share2 } from 'react-feather';
 import CopyToClipboard from 'react-copy-to-clipboard';
-
-const tmpMembers = [
-  { puzzleId: 1, puzzleColor: 'blue' },
-  { puzzleId: 2, puzzleColor: 'red' },
-  { puzzleId: 3, puzzleColor: 'yellow' },
-  { puzzleId: 4, puzzleColor: 'green' },
-  { puzzleId: 5, puzzleColor: 'purple' },
-];
+import { MeetMember } from '@/types/meets';
 
 interface Props {
   onClickShare: () => void;
+  meetName: string;
+  members: MeetMember[];
   joinCode: string;
 }
 
-const MeetingHeader = ({ onClickShare, joinCode }: Props) => {
+const MeetingHeader = ({ onClickShare, meetName, members, joinCode }: Props) => {
+  const convertedMembers = members.map((member) => member.userInfo);
   return (
     <Container>
       <SpaceBetweenRow>
-        <p className="title">찜닭머그러가자</p>
+        <p className="title">{meetName}</p>
         <CopyToClipboard text={joinCode} onCopy={onClickShare}>
           <ShareIcon />
         </CopyToClipboard>
       </SpaceBetweenRow>
       <Row>
-        <p className="description">인원 {tmpMembers.length}명</p>
-        <MemberIconStack members={tmpMembers} />
+        <p className="description">인원 {members.length}명</p>
+        <MemberIconStack members={convertedMembers} />
       </Row>
     </Container>
   );

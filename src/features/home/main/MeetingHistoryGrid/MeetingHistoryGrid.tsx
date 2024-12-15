@@ -2,91 +2,62 @@ import React from 'react';
 import styled from 'styled-components';
 import MemberIconStack from '@/features/home/main/MemberIconStack';
 import { useRouter } from 'next/navigation';
+import { HomeMeetsResponse } from '@/types/meets';
 
-const meetings = [
-  {
-    id: 1,
-    title: '방어회중자모임',
-    isActive: true,
-    members: [
-      { puzzleId: 1, puzzleColor: 'blue' },
-      { puzzleId: 2, puzzleColor: 'red' },
-      { puzzleId: 3, puzzleColor: 'yellow' },
-    ],
-  },
-  {
-    id: 3,
-    title: '15학번이즈백',
-    isActive: false,
-    members: [
-      { puzzleId: 4, puzzleColor: 'green' },
-      { puzzleId: 5, puzzleColor: 'purple' },
-      { puzzleId: 6, puzzleColor: 'black' },
-    ],
-  },
-  {
-    id: 4,
-    title: '한강 치킨팟',
-    isActive: false,
-    members: [
-      { puzzleId: 4, puzzleColor: 'green' },
-      { puzzleId: 5, puzzleColor: 'purple' },
-      { puzzleId: 6, puzzleColor: 'black' },
-      { puzzleId: 7, puzzleColor: 'blue' },
-      { puzzleId: 8, puzzleColor: 'red' },
-      { puzzleId: 9, puzzleColor: 'yellow' },
-      { puzzleId: 10, puzzleColor: 'green' },
-      { puzzleId: 11, puzzleColor: 'purple' },
-    ],
-  },
-];
+type Props = {
+  meets: HomeMeetsResponse;
+};
 
-const MeetingHistoryGrid = () => {
+const MeetingHistoryGrid = ({ meets }: Props) => {
   const router = useRouter();
+
   return (
     <Container>
-      <p className="title">곧 만나요!</p>
-      <BlockContainer>
-        {meetings
-          .filter((meeting) => meeting.isActive)
-          .slice(0, 4)
-          .map((meeting) => (
-            <MeetingBlock
-              key={meeting.id}
-              $isActive={meeting.isActive}
-              onClick={() => {
-                router.push(`/meet/${meeting.id}`);
-              }}
-            >
-              <p className="title">{meeting.title}</p>
-              <Row>
-                <p className="description">인원 {meeting.members.length}명</p>
-                <MemberIconStack members={meeting.members} />
-              </Row>
-            </MeetingBlock>
-          ))}
-      </BlockContainer>
-      <p className="title">즐거웠어요!</p>
-      <BlockContainer>
-        {meetings
-          .filter((meeting) => !meeting.isActive)
-          .slice(0, 4)
-          .map((meeting) => (
-            <MeetingBlock
-              key={meeting.id}
-              $isActive={meeting.isActive}
-              onClick={() => {
-                router.push(`/meet/${meeting.id}`);
-              }}
-            >
-              <p className="title">{meeting.title}</p>
-              <Row>
-                <p className="description">인원 {meeting.members.length}명</p>
-                <MemberIconStack members={meeting.members} />
-              </Row>
-            </MeetingBlock>
-          ))}
-      </BlockContainer>
+      {meets.upcomingMeets.length > 0 && (
+        <>
+          <p className="title">곧 만나요!</p>
+          <BlockContainer>
+            {meets.upcomingMeets.map((meet) => (
+              <MeetingBlock
+                key={meet.meetId}
+                $isActive={true}
+                onClick={() => {
+                  router.push(`/meet/${meet.meetId}`);
+                }}
+              >
+                <p className="title">{meet.meetName}</p>
+                <Row>
+                  <p className="description">인원 {meet.userInfo.length}명</p>
+                  <MemberIconStack members={meet.userInfo} />
+                </Row>
+              </MeetingBlock>
+            ))}
+          </BlockContainer>
+        </>
+      )}
+
+      {meets.pastMeets.length > 0 && (
+        <>
+          <p className="title">즐거웠어요!</p>
+          <BlockContainer>
+            {meets.pastMeets.map((meet) => (
+              <MeetingBlock
+                key={meet.meetId}
+                $isActive={false}
+                onClick={() => {
+                  router.push(`/meet/${meet.meetId}`);
+                }}
+              >
+                <p className="title">{meet.meetName}</p>
+                <Row>
+                  <p className="description">인원 {meet.userInfo.length}명</p>
+                  <MemberIconStack members={meet.userInfo} />
+                </Row>
+              </MeetingBlock>
+            ))}
+          </BlockContainer>
+        </>
+      )}
     </Container>
   );
 };

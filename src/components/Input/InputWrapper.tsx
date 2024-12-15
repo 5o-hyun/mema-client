@@ -36,6 +36,7 @@ const StyledInputWrapper = styled.div<{
   border-bottom: ${({ $isError, $isFocused, $isEmpty, theme }) => {
     const borderWidth = (!$isEmpty && $isError) || $isFocused ? '2px' : '1px';
     const borderColor = (() => {
+      if ($isError && $isFocused && !$isEmpty) return theme.colors.red;
       if ($isFocused) return theme.colors.primary.default;
       if ($isEmpty) return theme.colors.gray[4];
       if ($isError) return theme.colors.red;

@@ -4,10 +4,10 @@ import Input from '@/components/Input';
 import InputWrapper from '@/components/Input/InputWrapper';
 import Modal from '@/components/Modal';
 import { Text } from '@/components/Modal/modalTypography';
-import { useInputState } from '@/hooks/useInputState';
+import { useInputState } from '@/lib/hooks/useInputState';
 import { getMeet, updateMeet } from '@/lib/api/meets';
 import useToggle from '@/lib/hooks/useToggle';
-import { Meet } from '@/types/meets';
+import { MeetResponse } from '@/types/meets';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 import { useRouter } from 'next/navigation';
@@ -26,7 +26,7 @@ function ManagementChangeName() {
   const [isOpenModal, toggleOpenModal] = useToggle();
   const router = useRouter();
 
-  const { data: meet } = useQuery<AxiosResponse<Meet>>({
+  const { data: meet } = useQuery<AxiosResponse<MeetResponse>>({
     queryKey: ['meet'],
     queryFn: () => getMeet(1),
   });

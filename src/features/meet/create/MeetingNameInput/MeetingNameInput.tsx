@@ -1,4 +1,4 @@
-import { UseInputStateReturn } from '@/hooks/useInputState';
+import { UseInputStateReturn } from '@/lib/hooks/useInputState';
 import InputWrapper from '@/components/Input/InputWrapper';
 import Input from '@/components/Input';
 import styled from 'styled-components';

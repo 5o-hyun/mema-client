@@ -17,13 +17,13 @@ import React from 'react';
 
 const badges = [
   { Icon: Icon1, goal: '메마 첫 가입' },
-  { Icon: Icon2, goal: '첫 모임 생성' },
+  { Icon: Icon2, goal: '첫 미팅 생성' },
   { Icon: Icon3, goal: '메마 방문 5회' },
   { Icon: Icon4, goal: '메마 방문 20회' },
-  { Icon: Icon5, goal: '메이트 3회 생성' },
-  { Icon: Icon6, goal: '메이트 5회 생성' },
-  { Icon: Icon7, goal: '미팅 3회 생성' },
-  { Icon: Icon8, goal: '미팅 5회 생성' },
+  { Icon: Icon5, goal: '미팅 3회 생성' },
+  { Icon: Icon6, goal: '미팅 5회 생성' },
+  { Icon: Icon7, goal: '장소 추천 3회 생성' },
+  { Icon: Icon8, goal: '장소 추천 5회 생성' },
   { Icon: Icon9, goal: '정산 3회 이용' },
   { Icon: Icon10, goal: '정산 10회 이용' },
   { Icon: Icon11, goal: '코드 5회 공유' },

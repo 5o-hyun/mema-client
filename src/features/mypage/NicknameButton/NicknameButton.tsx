@@ -1,5 +1,5 @@
 'use client';
-// import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import styled from 'styled-components';
 import { ChevronRight } from 'react-feather';
 import React from 'react';
@@ -9,10 +9,9 @@ type Props = {
 };
 
 const NicknameButton = ({ nickname }: Props) => {
-  // const router = useRouter();
+  const router = useRouter();
   return (
-    // <Container onClick={() => router.push('/mypage/edit')}> TODO: 고도화 때 진행
-    <Container>
+    <Container onClick={() => router.push('/mypage/edit')}>
       {nickname}
       <ChevronRight />
     </Container>

@@ -3,12 +3,12 @@ import Modal from '@/components/Modal';
 import { Text } from '@/components/Modal/modalTypography';
 import BillCreateName from '@/features/meet/bill/BillCreate/BillCreateName';
 import BillCreatePrice from '@/features/meet/bill/BillCreate/BillCreatePrice';
-import { useInputState } from '@/hooks/useInputState';
+import { useInputState } from '@/lib/hooks/useInputState';
 import { createBill, getBill, updateBill } from '@/lib/api/bills';
 import { getMeet } from '@/lib/api/meets';
 import useToggle from '@/lib/hooks/useToggle';
 import { Bill } from '@/types/bills';
-import { Meet } from '@/types/meets';
+import { MeetResponse } from '@/types/meets';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { AxiosResponse } from 'axios';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
@@ -54,7 +54,7 @@ const BillUpsertPage = () => {
 
   const searchParam = Number(searchParams.get('chargeId'));
 
-  const { data: meet } = useQuery<AxiosResponse<Meet>>({
+  const { data: meet } = useQuery<AxiosResponse<MeetResponse>>({
     queryKey: ['meet'],
     queryFn: () => getMeet(Number(params.id)),
   });
@@ -115,15 +115,15 @@ const BillUpsertPage = () => {
           memberIds: [],
         }));
         meet.data.members.map((member) => {
-          if (member.isMe) {
+          if (member.userInfo.isMe) {
             setCreateData((prev) => ({
               ...prev,
-              memberIds: [member.userId],
+              memberIds: [member.userInfo.userId],
             }));
           }
         });
       } else {
-        const newMemberIds = meet.data.members.map((member) => member.userId);
+        const newMemberIds = meet.data.members.map((member) => member.userInfo.userId);
         setCreateData((prev) => ({
           ...prev,
           memberIds: newMemberIds,
@@ -157,10 +157,10 @@ const BillUpsertPage = () => {
   useEffect(() => {
     if (meet) {
       meet.data.members.map((member) => {
-        if (member.isMe) {
+        if (member.userInfo.isMe) {
           setCreateData((prev) => ({
             ...prev,
-            memberIds: [member.userId],
+            memberIds: [member.userInfo.userId],
           }));
         }
       });

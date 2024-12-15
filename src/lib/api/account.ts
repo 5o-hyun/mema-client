@@ -25,6 +25,10 @@ export const getUser = async () => {
 };
 
 // 유저 정보 수정
-export const updateUser = async (data: { nickname: string; puzId: number; puzColor: string }) => {
+export const updateUser = async (data: {
+  nickname: string;
+  puzzleId: number;
+  puzzleColor: string;
+}) => {
   return await defaultAxios.patch(`/mypage`, data);
 };
